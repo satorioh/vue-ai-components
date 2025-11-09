@@ -6,14 +6,22 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueDevTools(),
-    tailwindcss(),
-  ],
+  plugins: [vue(), vueDevTools(), tailwindcss()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  server: {
+    open: true,
+    host: '0.0.0.0',
+    proxy: {
+      '/basic-api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(new RegExp(`^/basic-api`), ''),
+      },
     },
   },
 })
